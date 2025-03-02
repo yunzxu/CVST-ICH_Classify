@@ -90,6 +90,7 @@ def infer(file_path = '/data/yunzhixu/Data/CVST/test_data/zhouguiqing.nii.gz',
         model = seg_model
 
         image =norm_CT(CT_data.copy())
+        image = crop_pad3D(image,[256,256,256])
         # print(CT_data.shape)
         model.eval()
         # model1.eval()
@@ -246,11 +247,11 @@ def infer_case(test_path,pred_save_path='/',test_name='test0',save_file=False):
     # class_model.load_state_dict(torch.load(class_model_path[0]).state_dict())
 
 
-    ##主要UNetCBAM 的阈值为0.93
+
  
     # torch.jit.load("./model_name.pth")
-
-    seg_model_path = ['train_class_CVST_tseg_p128_dice_augdrop_diceceloss_trainfile_fold_total_n32_pretrain_jit.pth']
+    
+    seg_model_path = ["train_class_CVST_tseg_p128_dice_augdrop_diceceloss_trainfile_fold_total_n32_pretrain_jit.pth"]
     class_model_path = ['train_class_CVST_maskpatch_foldtotal_segweight_addmask_nofreeze_035PICH_bestTruenum_bestauc_jit.pth',
                         'train_class_CVST_maskpatch_UNetCBAM_foldtotal_segweight_nofreeze_035PICH_bestauc_jit.pth']
 
@@ -258,6 +259,7 @@ def infer_case(test_path,pred_save_path='/',test_name='test0',save_file=False):
 
 
     pred_name = ['UNet     ','UNet+CBAM']
+    oth = [0.5,0.9244]
     for i in range(2):
         class_model = torch.jit.load(class_model_path[i],map_location=device).to(device)
 
@@ -274,7 +276,11 @@ def infer_case(test_path,pred_save_path='/',test_name='test0',save_file=False):
                     save=save_file,
                     seg_model=seg_model,
                     class_model=class_model)
-        print(pred_name[i],'=',tmp,str(tmp_aug)+'(Data aug pred)')
+        if tmp<oth[i]:
+            pred_case ='CVST-ICH'
+        else:
+            pred_case = 'sICH'
+        print(pred_name[i],'=',tmp,str(tmp_aug)+' pred '+str(pred_case))
 
 
 import argparse
