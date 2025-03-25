@@ -4,9 +4,6 @@ import matplotlib.pyplot as plt
 from scipy.ndimage import zoom
 import SimpleITK as sitk
 import torch 
-import glob
-import h5py
-import os
 from image_process import crop_edge_sample,crop_pad3D
 from monai.inferers import sliding_window_inference
 from class_tool import class_inference
