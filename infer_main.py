@@ -144,6 +144,7 @@ def infer(file_path = '/data/yunzhixu/Data/CVST/test_data/zhouguiqing.nii.gz',
 
     ##取mask:
         data_array = CT_data
+        data_array = crop_pad3D(data_array,[256,256,256])
         mask_array = pred_array
         X_final,Y_final,L,index = crop_edge_sample(mask_array[np.newaxis,:,:,:],data_array[np.newaxis,:,:,:],resample=None)
         index =index[0]
